@@ -513,10 +513,10 @@ with tab4:
     )
 
     future_dates = pd.date_range(
-        start=last_date,
-        periods=7,
-        freq='M'
-    )[1:]
+    start=last_date,
+    periods=7,
+    freq='ME'
+)[1:]
 
     future_labels = future_dates.strftime('%Y-%m')
 
