@@ -4,13 +4,9 @@ import plotly.express as px
 from sklearn.linear_model import LinearRegression
 import sqlite3
 
-# ---------------- DATABASE CONNECTION ---------------- #
-
 conn = sqlite3.connect(
     'voguemetrics.db'
 )
-
-# ---------------- CATEGORY TRANSLATIONS ---------------- #
 
 category_translation = {
     'beleza_saude': 'Beauty & Health',
@@ -25,14 +21,10 @@ category_translation = {
     'moveis_escritorio': 'Office Furniture'
 }
 
-# ---------------- PAGE CONFIG ---------------- #
-
 st.set_page_config(
     page_title="VogueMetrics",
     layout="wide"
 )
-
-# ---------------- CUSTOM CSS ---------------- #
 
 st.markdown("""
 <style>
@@ -100,14 +92,11 @@ section[data-testid="stSidebar"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- TITLE ---------------- #
-
 st.title("VogueMetrics")
 st.subheader("AI-Powered E-Commerce Analytics Platform")
 st.caption(
     "Real-time business intelligence dashboard for sales, customer, and revenue analytics."
 )
-# ---------------- LOAD DATA ---------------- #
 
 @st.cache_data
 def load_data():
@@ -121,8 +110,6 @@ def load_data():
     return orders, order_items, payments, customers, products
 
 orders, order_items, payments, customers, products = load_data()
-
-# ---------------- STORE DATA IN SQL ---------------- #
 
 orders.to_sql(
     'orders',
@@ -145,8 +132,6 @@ payments.to_sql(
     index=False
 )
 
-# ---------------- DATA CLEANING ---------------- #
-
 orders['order_purchase_timestamp'] = pd.to_datetime(
     orders['order_purchase_timestamp']
 )
@@ -154,8 +139,6 @@ orders['order_purchase_timestamp'] = pd.to_datetime(
 orders['year'] = orders[
     'order_purchase_timestamp'
 ].dt.year
-
-# ---------------- SIDEBAR FILTERS ---------------- #
 
 st.sidebar.markdown("""
 # VogueMetrics
@@ -172,7 +155,6 @@ selected_state = st.sidebar.selectbox(
     ['All'] + list(customer_states)
 )
 
-# YEAR FILTER
 
 years = sorted(
     orders['year'].unique()
@@ -182,8 +164,6 @@ selected_year = st.sidebar.selectbox(
     "Select Year",
     ['All'] + list(years)
 )
-
-# ---------------- DATA MERGING ---------------- #
 
 merged_df = orders.merge(
     customers,
@@ -205,8 +185,6 @@ merged_df = merged_df.merge(
     on='product_id'
 )
 
-# ---------------- APPLY FILTERS ---------------- #
-
 if selected_state != 'All':
     merged_df = merged_df[
         merged_df['customer_state'] == selected_state
@@ -217,7 +195,6 @@ if selected_year != 'All':
         merged_df['year'] == selected_year
     ]
 
-# ---------------- KPI CALCULATIONS ---------------- #
 
 total_orders = merged_df['order_id'].nunique()
 
@@ -227,7 +204,6 @@ total_revenue = merged_df['payment_value'].sum()
 
 avg_order_value = total_revenue / total_orders
 
-# ---------------- DASHBOARD TABS ---------------- #
 
 tab1, tab2, tab3, tab4 = st.tabs([
     "Executive Overview",
@@ -236,7 +212,6 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "Forecasting & AI"
 ])
 
-# ---------------- KPI SECTION ---------------- #
 with tab1:
     col1, col2, col3, col4 = st.columns(4)
 
@@ -264,7 +239,6 @@ with tab1:
             value=f"R$ {avg_order_value:,.0f}"
         )
 
-    # ---------------- SALES TREND ---------------- #
 
     st.markdown("## Monthly Sales Trend")
 
@@ -283,7 +257,6 @@ with tab1:
         'month'
     )['payment_value'].sum().reset_index()
 
-    # REMOVE INCOMPLETE FINAL MONTHS
 
     monthly_sales = monthly_sales.iloc[:-2]
 
@@ -304,7 +277,6 @@ with tab1:
     fig.update_layout(height=450)
     st.plotly_chart(fig, use_container_width=True)
     st.divider()
-    # ---------------- CATEGORY ANALYTICS ---------------- #
 
     st.markdown("## Top Product Categories")
 
@@ -340,7 +312,6 @@ with tab1:
     fig.update_layout(height=450)
     st.plotly_chart(fig2, use_container_width=True)
     st.divider()
-    # ---------------- STATE REVENUE ANALYTICS ---------------- #
 
     st.markdown("## Revenue by State")
 
@@ -370,7 +341,6 @@ with tab1:
     fig.update_layout(height=450)
     st.plotly_chart(fig3, use_container_width=True)
     st.divider()
-# ---------------- CUSTOMER SEGMENTATION ---------------- #
 
 with tab2:
     st.markdown("## Customer Segmentation")
@@ -379,7 +349,6 @@ with tab2:
         'customer_unique_id'
     )['payment_value'].sum().reset_index()
 
-    # SEGMENT CUSTOMERS
 
     def segment_customer(amount):
 
@@ -416,22 +385,15 @@ with tab2:
     fig.update_layout(height=450)
     st.plotly_chart(fig4, use_container_width=True)
     st.divider()
-    # ---------------- AI BUSINESS INSIGHTS ---------------- #
 
 with tab4:
     st.markdown("## AI Business Insights")
 
-    # TOP STATE
-
     top_state = state_revenue.iloc[0]['customer_state']
     top_state_revenue = state_revenue.iloc[0]['payment_value']
 
-    # TOP CATEGORY
-
     top_category = category_sales.iloc[0]['product_category_name']
     top_category_revenue = category_sales.iloc[0]['payment_value']
-
-    # HIGH VALUE CUSTOMERS
 
     high_value_count = segment_counts[
         segment_counts['segment'] == 'High Value'
@@ -442,8 +404,6 @@ with tab4:
     high_value_percentage = (
         high_value_count / total_customer_count
     ) * 100
-
-    # INSIGHT CARDS
 
     insight1 = f"""
     Top performing state is **{top_state}**
@@ -461,19 +421,13 @@ with tab4:
     of the customer base.
     """
 
-    # DISPLAY INSIGHTS
-
     st.info(insight1)
 
     st.success(insight2)
 
     st.warning(insight3)
 
-    # ---------------- SALES FORECASTING ---------------- #
-
     st.markdown("## Revenue Forecasting")
-
-    # PREPARE MONTHLY SALES DATA
 
     forecast_df = monthly_sales.copy()
 
@@ -481,14 +435,8 @@ with tab4:
 
     forecast_df['month_number'] = range(len(forecast_df))
 
-    # FEATURES & TARGET
-
     X = forecast_df[['month_number']]
     y = forecast_df['payment_value']
-
-    # TRAIN MODEL
-
-    # ---------------- SIMPLE TREND FORECAST ---------------- #
 
     recent_average = monthly_sales[
         'payment_value'
@@ -503,12 +451,6 @@ with tab4:
         current_value *= 1.02
 
         future_predictions.append(current_value)
-
-    # CREATE FUTURE LABELS
-
-    # CREATE FUTURE DATES
-
-    # ---------------- SAFE FORECASTING ---------------- #
 
     if len(monthly_sales) > 0:
 
@@ -543,21 +485,15 @@ with tab4:
             'predicted_revenue': []
         })
 
-    # COMBINE HISTORICAL + FORECAST
-
     historical_chart = monthly_sales.copy()
 
     historical_chart.columns = ['month', 'revenue']
 
     historical_chart['type'] = 'Historical'
 
-    # ---------------- FORECAST CHART ---------------- #
-
     forecast_chart = forecast_results.copy()
 
     forecast_chart.columns = ['month', 'revenue']
-
-    # CONNECT FORECAST TO LAST HISTORICAL POINT
 
     last_historical = historical_chart.iloc[-1:]
 
@@ -572,8 +508,6 @@ with tab4:
         historical_chart,
         forecast_chart
     ])
-
-    # PLOT
 
     fig5 = px.line(
         combined_chart,
@@ -603,8 +537,6 @@ with tab4:
     st.plotly_chart(fig5, use_container_width=True)
 
     st.divider()
-
-    # ---------------- TOP PRODUCTS ANALYTICS ---------------- #
 
 with tab3:
     st.markdown("## Top Performing Products")
@@ -639,8 +571,6 @@ with tab3:
     )
 
     st.divider()
-
-    # ---------------- SQL ANALYTICS ---------------- #
 
     st.markdown("## SQL-Based Revenue Analysis")
 
