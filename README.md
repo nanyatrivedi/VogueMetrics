@@ -2,17 +2,19 @@
 
 AI-Powered E-Commerce Analytics Platform built using Python, SQL, Streamlit, Pandas, and Plotly.
 
+## Live Demo
+
+Live App:  
+https://voguemetrics-jzwem7p7bq5kcsy3tzjbf5.streamlit.app
+
 ## Features
 
-* Executive KPI Dashboard
-* Interactive State & Year Filters
-* Revenue Trend Analysis
-* Customer Segmentation
-* Product Category Analytics
-* SQL-Based Business Queries
-* AI-Generated Business Insights
-* Revenue Forecasting
-* Top Performing Products Analytics
+- Executive KPI Dashboard
+- Revenue Forecasting
+- SQL-Based Analytics
+- Customer Segmentation
+- Product Performance Tracking
+- Interactive Business Intelligence Dashboard
 
 ## Tech Stack
 
