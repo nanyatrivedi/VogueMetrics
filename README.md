@@ -7,6 +7,36 @@ AI-Powered E-Commerce Analytics Platform built using Python, SQL, Streamlit, Pan
 Live App:  
 https://voguemetrics-jzwem7p7bq5kcsy3tzjbf5.streamlit.app
 
+## Dashboard Screenshots
+
+### Executive Overview
+![Overview](screenshots/Screenshot%202026-05-28%20at%209.52.53%E2%80%AFPM.png)
+
+---
+
+### Product Category Analytics
+![Categories](screenshots/Screenshot%202026-05-28%20at%209.53.02%E2%80%AFPM.png)
+
+---
+
+### Revenue by State
+![Revenue State](screenshots/Screenshot%202026-05-28%20at%209.53.12%E2%80%AFPM.png)
+
+---
+
+### Customer Segmentation
+![Customer Segments](screenshots/Screenshot%202026-05-28%20at%209.53.20%E2%80%AFPM.png)
+
+---
+
+### Top Performing Products + SQL Analysis
+![Products](screenshots/Screenshot%202026-05-28%20at%209.53.26%E2%80%AFPM.png)
+
+---
+
+### AI Forecasting & Insights
+![Forecasting](screenshots/Screenshot%202026-05-28%20at%209.53.34%E2%80%AFPM.png)
+
 ## Features
 
 - Executive KPI Dashboard
