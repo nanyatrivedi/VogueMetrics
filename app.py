@@ -416,7 +416,7 @@ with tab2:
     fig.update_layout(height=450)
     st.plotly_chart(fig4, use_container_width=True)
     st.divider()
-# ---------------- AI BUSINESS INSIGHTS ---------------- #
+    # ---------------- AI BUSINESS INSIGHTS ---------------- #
 
 with tab4:
     st.markdown("## AI Business Insights")
@@ -508,22 +508,40 @@ with tab4:
 
     # CREATE FUTURE DATES
 
-    last_date = pd.to_datetime(
-        monthly_sales['month'].iloc[-1]
-    )
+    # ---------------- SAFE FORECASTING ---------------- #
 
-    future_dates = pd.date_range(
-    start=last_date,
-    periods=7,
-    freq='ME'
-)[1:]
+    if len(monthly_sales) > 0:
 
-    future_labels = future_dates.strftime('%Y-%m')
+        last_date = pd.to_datetime(
+            monthly_sales['month'].iloc[-1]
+        )
 
-    forecast_results = pd.DataFrame({
-        'month': future_labels,
-        'predicted_revenue': future_predictions
-    })
+        future_dates = pd.date_range(
+            start=last_date,
+            periods=7,
+            freq='ME'
+        )[1:]
+
+        future_labels = future_dates.strftime('%Y-%m')
+
+    else:
+
+        future_labels = []
+
+
+    if len(future_labels) > 0:
+
+        forecast_results = pd.DataFrame({
+            'month': future_labels,
+            'predicted_revenue': future_predictions
+        })
+
+    else:
+
+        forecast_results = pd.DataFrame({
+            'month': [],
+            'predicted_revenue': []
+        })
 
     # COMBINE HISTORICAL + FORECAST
 
@@ -586,7 +604,7 @@ with tab4:
 
     st.divider()
 
-# ---------------- TOP PRODUCTS ANALYTICS ---------------- #
+    # ---------------- TOP PRODUCTS ANALYTICS ---------------- #
 
 with tab3:
     st.markdown("## Top Performing Products")
